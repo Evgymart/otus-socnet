@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import "otus/socnet/app"
 
 func main() {
-	fmt.Println("Hello, world!")
+	app, err := app.NewApp()
+	if err != nil {
+		panic(err.Error())
+		return
+	}
+
+	app.Start()
 }
