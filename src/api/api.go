@@ -6,6 +6,7 @@ import (
 
 func InitApi(mux *http.ServeMux) {
 	mux.HandleFunc("/login", login)
+	mux.HandleFunc("/user/register", register)
 }
 
 func writeResponse(writer http.ResponseWriter, responseMessage []byte) {
