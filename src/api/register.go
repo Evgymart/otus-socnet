@@ -1,9 +1,11 @@
 package api
 
 import (
+	"encoding/json"
 	"io"
 	"log"
 	"net/http"
+	"otus/socnet/models"
 )
 
 func register(writer http.ResponseWriter, request *http.Request) {
@@ -13,10 +15,19 @@ func register(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	defer request.Body.Close()
-	b, err := io.ReadAll(request.Body)
+	data, err := io.ReadAll(request.Body)
 	if err != nil {
 		log.Fatalln(err)
+		return
 	}
 
-	writeResponse(writer, b)
+	user, err := models.BuildUser(data)
+	if err != nil {
+		log.Fatalln(err)
+		return
+	}
+
+	user.FirstName += " Anime girl"
+	json, _ := json.Marshal(user)
+	writeResponse(writer, json)
 }
