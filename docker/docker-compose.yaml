@@ -17,4 +17,17 @@ services:
       - ../src:/opt/app/src
     networks:
       - app-network
+  mysql:
+      container_name: mysql
+      restart: unless-stopped
+      image: mysql:8.0.32-oracle
+      environment:
+        - MYSQL_DATABASE=database
+        - MYSQL_ROOT_PASSWORD=root
+      ports:
+        - '3306:3306'
+      depends_on:
+        - app
+      networks:
+        - app-network
 
