@@ -5,6 +5,7 @@ CREATE TABLE `users` (
   `birthdate` DATE NOT NULL,
   `gender` ENUM('none', 'male', 'female') NOT NULL,
   `email` VARCHAR(255) NOT NULL UNIQUE,
+  `password` VARCHAR(225) NOT NULL,
   `biography` TEXT DEFAULT NULL,
   `city` VARCHAR(255) NOT NULL
 );

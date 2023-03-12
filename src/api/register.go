@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"otus/socnet/core"
 	"otus/socnet/models"
 )
 
@@ -27,7 +28,7 @@ func register(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	user.FirstName += " Anime girl"
-	json, _ := json.Marshal(user)
+	message := core.AddUser(user)
+	json, _ := json.Marshal(message)
 	writeResponse(writer, json)
 }
