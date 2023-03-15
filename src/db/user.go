@@ -10,6 +10,27 @@ func AddUser(db Database, user *models.User) error {
 	if err != nil {
 		return err
 	}
-	statement.Close()
+	defer statement.Close()
 	return nil
+}
+
+func Login(db Database, creds *models.Credentials) (string, error) {
+	var password string
+	selectQuery := "SELECT password FROM users WHERE email = ?"
+	response, err := db.Client.Query(selectQuery, creds.Email)
+	if err != nil {
+		return "", err
+	}
+
+	defer response.Close()
+	if !response.Next() {
+		return "", nil
+	}
+
+	err = response.Scan(&password)
+	if err != nil {
+		panic(err)
+	}
+
+	return password, nil
 }
