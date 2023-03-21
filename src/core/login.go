@@ -6,34 +6,13 @@ import (
 )
 
 type TokenMessage struct {
-	Status  string
-	Message string
-	Token   string
+	Status  string `json:"token"`
+	Message string `json:"message"`
+	Token   string `json:"token"`
 }
 
-func Login(creds *models.Credentials) TokenMessage {
+func Login(creds *models.Credentials) bool {
 	database := db.GetDatabase()
-	storedPassword, err := db.Login(database, creds)
-	if err != nil {
-		return TokenMessage{
-			Status:  "Error",
-			Message: err.Error(),
-			Token:   "",
-		}
-	}
-
-	response := TokenMessage{
-		Status:  "OK",
-		Message: "",
-		Token:   "",
-	}
-
-	success := compareHash(creds.Password, storedPassword)
-	if success {
-		response.Token = "TOKEN"
-	} else {
-		response.Message = "Bad credentials"
-	}
-
-	return response
+	storedPassword, _ := db.Login(database, creds)
+	return compareHash(creds.Password, storedPassword)
 }

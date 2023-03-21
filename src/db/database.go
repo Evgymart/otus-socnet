@@ -45,7 +45,7 @@ func getParams() DatabaseParams {
 
 func InitDatabase() {
 	params := getParams()
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", params.User, params.Password, params.Host, params.Port, params.Database))
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", params.User, params.Password, params.Host, params.Port, params.Database))
 	if err != nil {
 		panic(err)
 	}

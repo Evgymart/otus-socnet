@@ -1,6 +1,8 @@
 package core
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"golang.org/x/crypto/bcrypt"
+)
 
 func hashPassword(pass string) string {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(pass), 8)

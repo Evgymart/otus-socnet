@@ -28,7 +28,7 @@ func register(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	message := core.AddUser(user)
+	message := core.Register(user)
 	json, _ := json.Marshal(message)
 	writeResponse(writer, json)
 }
