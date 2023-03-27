@@ -12,6 +12,7 @@ func InitApi(mux *http.ServeMux) {
 	mux.HandleFunc("/logout", logout)
 	mux.HandleFunc("/user/register", register)
 	mux.HandleFunc("/user/get", getUser)
+	mux.HandleFunc("/user/search", userSearch)
 }
 
 func writeResponse(writer http.ResponseWriter, responseMessage []byte) {

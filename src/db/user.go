@@ -38,7 +38,7 @@ func GetUsers(db Database, limit int) ([]views.User, error) {
 
 func GetUser(db Database, email string) (*views.User, error) {
 	var user views.User
-	selectQuery := "SELECT first_name, last_name, birthdate, gender, email, biography, city FROM users WHERE email = ?"
+	selectQuery := "SELECT first_name, last_name, birthdate, gender, email, biography, city FROM users WHERE email = ? LIMIT 1"
 	response, err := db.Client.Query(selectQuery, email)
 	if err != nil {
 		return nil, err
@@ -55,6 +55,30 @@ func GetUser(db Database, email string) (*views.User, error) {
 	}
 
 	return &user, nil
+}
+
+func SearchUsers(db Database, name string) ([]views.User, error) {
+	var users []views.User
+	selectQuery := `SELECT first_name, last_name, birthdate, gender, email, biography, city FROM users ` +
+		`WHERE(first_name LIKE ? OR last_name LIKE ? OR CONCAT(first_name, " ", last_name) LIKE ?)`
+
+	name = "%" + name + "%"
+	response, err := db.Client.Query(selectQuery, name, name, name)
+	if err != nil {
+		return nil, err
+	}
+
+	defer response.Close()
+	for response.Next() {
+		var user views.User
+		err := response.Scan(&user.FirstName, &user.LastName, &user.Birthdate, &user.Gender, &user.Email, &user.Biography, &user.City)
+		if err != nil {
+			return []views.User{}, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
 }
 
 func Login(db Database, creds *models.Credentials) (string, error) {
