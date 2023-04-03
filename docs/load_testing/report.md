@@ -85,9 +85,11 @@ wrk -t5 -c10 -d1m -H "Cookie: session_token=1d133fde-b12e-4f04-8b76-07b161628802
 Результаты тестов можно посмотреть в папке results. Графики
 
 Матильда:
+
 ![image](./results/matilda/preindex/graph.png)
 
 Джэк:
+
 ![image](./results/jack/preindex/graph.png)
 
 Как мы видим из графиков, при увеличении нагрузки latency увеличивается а throuhput падает. Результаты для обоих случаев похожие, что мы и ожидали.
