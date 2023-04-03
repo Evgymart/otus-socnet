@@ -57,13 +57,14 @@ func GetUser(db Database, email string) (*views.User, error) {
 	return &user, nil
 }
 
-func SearchUsers(db Database, name string) ([]views.User, error) {
+func SearchUsers(db Database, firstName string, lastName string) ([]views.User, error) {
 	var users []views.User
 	selectQuery := `SELECT first_name, last_name, birthdate, gender, email, biography, city FROM users ` +
-		`WHERE(first_name LIKE ? OR last_name LIKE ? OR CONCAT(first_name, " ", last_name) LIKE ?)`
+		`WHERE(first_name LIKE ? AND last_name LIKE ?) ORDER BY id`
 
-	name = "%" + name + "%"
-	response, err := db.Client.Query(selectQuery, name, name, name)
+	firstName = "%" + firstName + "%"
+	lastName = "%" + lastName + "%"
+	response, err := db.Client.Query(selectQuery, firstName, lastName)
 	if err != nil {
 		return nil, err
 	}

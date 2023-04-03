@@ -19,15 +19,15 @@ func userSearch(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	name := getName(request)
-	if name == "" {
-		message := core.ResponseError(errors.New("No name provided"))
+	firstName, lastName := getNames(request)
+	if firstName == "" || lastName == "" {
+		message := core.ResponseError(errors.New("Invalid name provided"))
 		json, _ := json.Marshal(message)
 		writeResponse(writer, json)
 		return
 	}
 
-	users, err := core.SearchUsers(name)
+	users, err := core.SearchUsers(firstName, lastName)
 	if err != nil {
 		message := core.ResponseError(err)
 		json, _ := json.Marshal(message)
@@ -41,14 +41,14 @@ func userSearch(writer http.ResponseWriter, request *http.Request) {
 	writeResponse(writer, json)
 }
 
-func getName(request *http.Request) string {
+func getNames(request *http.Request) (string, string) {
 	var searchData core.SearchData
 	defer request.Body.Close()
 	data, err := io.ReadAll(request.Body)
 	if err != nil {
-		return ""
+		return "", ""
 	}
 
 	_ = json.Unmarshal(data, &searchData)
-	return searchData.Name
+	return searchData.FirstName, searchData.LastName
 }

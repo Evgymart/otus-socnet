@@ -6,10 +6,11 @@ import (
 )
 
 type SearchData struct {
-	Name string `json:"name"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 }
 
-func SearchUsers(name string) ([]views.User, error) {
+func SearchUsers(firstName string, lastName string) ([]views.User, error) {
 	database := db.GetDatabase()
-	return db.SearchUsers(database, name)
+	return db.SearchUsers(database, firstName, lastName)
 }
