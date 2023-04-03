@@ -73,3 +73,40 @@ curl --location '127.0.0.1:8080/user/search' \
 ```
 
 Для нагрузочного тестирования будем использовать утилиту wrk
+
+
+wrk -t5 -c10 -d1m -H "Cookie: session_token=1d133fde-b12e-4f04-8b76-07b161628802" -s ./scripts/matilda.lua --latency "http://127.0.0.1:8080/user/search"
+
+Где:
+* -tn - число потоков
+* -cn - число подключений
+* -dnm - время проверки(1 минута в нашем случае)
+
+Результаты тестов можно посмотреть в папке results. Графики
+
+Матильда:
+![image](./results/matilda/preindex/graph.png)
+
+Джэк:
+![image](./results/jack/preindex/graph.png)
+
+Как мы видим из графиков, при увеличении нагрузки latency увеличивается а throuhput падает. Результаты для обоих случаев похожие, что мы и ожидали.
+
+Так же, при большом количестве запросов начинают появляться ошибки подключения. На графиках это не отображено, но можно посмотреть в логах тестирования, например:
+
+```
+Running 1m test @ http://127.0.0.1:8080/user/search
+  5 threads and 1000 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.30s   251.58ms   2.00s    82.35%
+    Req/Sec     2.62      4.04    30.00     86.42%
+  Latency Distribution
+     50%    1.23s
+     75%    1.34s
+     90%    1.72s
+     99%    2.00s
+  447 requests in 1.00m, 764.79KB read
+  Socket errors: connect 752, read 220, write 0, timeout 430
+Requests/sec:      7.45
+Transfer/sec:     12.74KB
+```
