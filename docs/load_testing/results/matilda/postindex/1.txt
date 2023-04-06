@@ -1,0 +1,13 @@
+Running 1m test @ http://127.0.0.1:8080/user/search
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   591.23us   81.24us   6.79ms   98.93%
+    Req/Sec     1.69k    38.38     1.73k    95.67%
+  Latency Distribution
+     50%  588.00us
+     75%  607.00us
+     90%  623.00us
+     99%  667.00us
+  100813 requests in 1.00m, 32.78MB read
+Requests/sec:   1680.20
+Transfer/sec:    559.52KB

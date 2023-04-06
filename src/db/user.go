@@ -62,8 +62,8 @@ func SearchUsers(db Database, firstName string, lastName string) ([]views.User, 
 	selectQuery := `SELECT first_name, last_name, birthdate, gender, email, biography, city FROM users ` +
 		`WHERE(first_name LIKE ? AND last_name LIKE ?) ORDER BY id`
 
-	firstName = "%" + firstName + "%"
-	lastName = "%" + lastName + "%"
+	firstName = firstName + "%"
+	lastName = lastName + "%"
 	response, err := db.Client.Query(selectQuery, firstName, lastName)
 	if err != nil {
 		return nil, err
