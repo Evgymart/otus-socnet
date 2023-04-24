@@ -1,1 +1,2 @@
 /src/tmp
+docker/mysql_*/data/*

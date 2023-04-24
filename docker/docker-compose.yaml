@@ -17,8 +17,8 @@ services:
       - ../src:/opt/app/src
     networks:
       - app-network
-  mysql:
-      container_name: mysql
+  mysql_master:
+      container_name: mysql_master
       restart: unless-stopped
       image: mysql:8.0.32-oracle
       environment:
@@ -26,8 +26,42 @@ services:
         - MYSQL_ROOT_PASSWORD=root
       ports:
         - '3306:3306'
+      volumes:
+        - ./mysql_master/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
+        - ./mysql_master/data:/var/lib/mysql
       depends_on:
         - app
       networks:
         - app-network
-
+  mysql_slave_first:
+      container_name: mysql_slave_first
+      restart: unless-stopped
+      image: mysql:8.0.32-oracle
+      environment:
+        - MYSQL_DATABASE=database
+        - MYSQL_ROOT_PASSWORD=root
+      ports:
+        - '4406:3306'
+      volumes:
+        - ./mysql_slave_first/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
+        - ./mysql_slave_first/data:/var/lib/mysql
+      depends_on:
+        - mysql_master
+      networks:
+        - app-network
+  mysql_slave_second:
+      container_name: mysql_slave_second
+      restart: unless-stopped
+      image: mysql:8.0.32-oracle
+      environment:
+        - MYSQL_DATABASE=database
+        - MYSQL_ROOT_PASSWORD=root
+      ports:
+        - '5506:3306'
+      volumes:
+        - ./mysql_slave_second/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
+        - ./mysql_slave_second/data:/var/lib/mysql
+      depends_on:
+        - mysql_master
+      networks:
+        - app-network
