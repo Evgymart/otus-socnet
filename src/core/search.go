@@ -11,6 +11,6 @@ type SearchData struct {
 }
 
 func SearchUsers(firstName string, lastName string) ([]views.User, error) {
-	database := db.GetDatabase()
+	database := db.GetReadDb()
 	return db.SearchUsers(database, firstName, lastName)
 }

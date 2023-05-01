@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	db.InitDatabase()
+	db.Init()
 	app, err := app.NewApp()
 	if err != nil {
 		panic(err.Error())

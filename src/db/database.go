@@ -21,30 +21,31 @@ type Database struct {
 }
 
 var (
-	database Database
-	params   *DatabaseParams
+	readDbs       [2]Database
+	readDbCounter int
+	writeDb       Database
 )
 
-func GetDatabase() Database {
-	if database.Client == nil {
+func GetWriteDb() Database {
+	if writeDb.Client == nil {
 		panic("Database is not initiated")
 	}
 
-	return database
+	return writeDb
 }
 
-func getParams() DatabaseParams {
-	return DatabaseParams{
-		User:     "root",
-		Password: "root",
-		Database: "database",
-		Host:     "mysql",
-		Port:     "3306",
+func GetReadDb() Database {
+	if readDbCounter >= len(readDbs) {
+		readDbCounter = 0
 	}
+
+	db := readDbs[readDbCounter]
+	fmt.Printf("DB index: %d\n", readDbCounter)
+	readDbCounter++
+	return db
 }
 
-func InitDatabase() {
-	params := getParams()
+func initDatabase(params *DatabaseParams) Database {
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", params.User, params.Password, params.Host, params.Port, params.Database))
 	if err != nil {
 		panic(err)
@@ -53,5 +54,38 @@ func InitDatabase() {
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
-	database.Client = db
+	return Database{
+		Client: db,
+	}
+}
+
+func Init() {
+	master := DatabaseParams{
+		User:     "root",
+		Password: "root",
+		Database: "database",
+		Host:     "mysql_master",
+		Port:     "3306",
+	}
+
+	slave_one := DatabaseParams{
+		User:     "root",
+		Password: "root",
+		Database: "database",
+		Host:     "mysql_slave_first",
+		Port:     "3306",
+	}
+
+	slave_two := DatabaseParams{
+		User:     "root",
+		Password: "root",
+		Database: "database",
+		Host:     "mysql_slave_second",
+		Port:     "3306",
+	}
+
+	writeDb = initDatabase(&master)
+	readDbs[0] = initDatabase(&slave_one)
+	readDbs[1] = initDatabase(&slave_two)
+	readDbCounter = 0
 }

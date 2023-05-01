@@ -10,11 +10,11 @@ type GetUserData struct {
 }
 
 func GetUsers(limit int) ([]views.User, error) {
-	database := db.GetDatabase()
+	database := db.GetReadDb()
 	return db.GetUsers(database, limit)
 }
 
 func GetUser(email string) (*views.User, error) {
-	database := db.GetDatabase()
+	database := db.GetReadDb()
 	return db.GetUser(database, email)
 }

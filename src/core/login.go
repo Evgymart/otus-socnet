@@ -12,7 +12,7 @@ type TokenMessage struct {
 }
 
 func Login(creds *models.Credentials) bool {
-	database := db.GetDatabase()
+	database := db.GetReadDb()
 	storedPassword, _ := db.Login(database, creds)
 	return compareHash(creds.Password, storedPassword)
 }
