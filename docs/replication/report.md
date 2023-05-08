@@ -109,3 +109,40 @@ Source_SSL_Verify_Server_Cert: No
 Проверяем и убеждаештся что репликация работает
 
 ![image](./img/replication.png)
+
+Попробуем сделать запрос на поиск, нагружающий только slave
+Используем для этого утилиту wrk
+
+```
+ wrk -t5 -c10 -d1m -H "Cookie: session_token=6e894c5d-5486-4d84-8573-99798abfb6e3" -s ./scripts/matilda.lua --latency "http://127.0.0.1:8080/user/search"
+
+ Running 1m test @ http://127.0.0.1:8080/user/search
+  5 threads and 10 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.19s   409.69ms   2.00s    58.95%
+    Req/Sec     2.00      2.42    10.00     92.27%
+  Latency Distribution
+     50%    1.10s
+     75%    1.57s
+     90%    1.78s
+     99%    1.98s
+  487 requests in 1.00m, 162.17KB read
+  Socket errors: connect 0, read 0, write 0, timeout 12
+Requests/sec:      8.10
+Transfer/sec:      2.70KB
+```
+
+Нагрузка на контейнеры
+
+![image](./img/docker_stats_read.png)
+
+Так как тест проводится на MacOS и в виртуальной машине, процессор на контейнерах нагружается сразу.
+
+Для того чтобы сделать нагрузку на запись будем использовать следующий запрос в базу
+
+```
+update users u1, users u2 set u1.first_name = u1.last_name, u1.last_name = u2.first_name where u1.id = u2.id AND u1.email = 'user@mail.com';
+```
+
+Таким образом мы будем непрерывно менять местами иия и фамилию пользователя.
+

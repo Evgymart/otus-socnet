@@ -13,6 +13,7 @@ func InitApi(mux *http.ServeMux) {
 	mux.HandleFunc("/user/register", register)
 	mux.HandleFunc("/user/get", getUser)
 	mux.HandleFunc("/user/search", userSearch)
+	mux.HandleFunc("/user/swap_names", swapNames)
 }
 
 func writeResponse(writer http.ResponseWriter, responseMessage []byte) {

@@ -40,7 +40,6 @@ func GetReadDb() Database {
 	}
 
 	db := readDbs[readDbCounter]
-	fmt.Printf("DB index: %d\n", readDbCounter)
 	readDbCounter++
 	return db
 }

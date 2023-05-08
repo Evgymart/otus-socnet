@@ -11,6 +11,18 @@ func AddUser(db Database, user *models.User) error {
 	if err != nil {
 		return err
 	}
+
+	defer statement.Close()
+	return nil
+}
+
+func SwapUserNames(db Database, firstId int, lastId int) error {
+	update := `update users u1, users u2 set u1.first_name = u1.last_name, u1.last_name = u2.first_name where u1.id = u2.id AND u1.id >= ? AND u1.id <= ?`
+	statement, err := db.Client.Query(update, firstId, lastId)
+	if err != nil {
+		return err
+	}
+
 	defer statement.Close()
 	return nil
 }
