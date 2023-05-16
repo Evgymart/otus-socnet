@@ -31,10 +31,10 @@ func login(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	success := core.Login(creds)
+	success, id := core.Login(creds)
 	var message core.Message
 	if success {
-		makeSession(creds, writer, request)
+		makeSession(id, creds.Email, writer, request)
 		message = core.ResponseOK()
 	} else {
 		message = core.ResponseError(errors.New("Could not log in"))
@@ -44,9 +44,9 @@ func login(writer http.ResponseWriter, request *http.Request) {
 	writeResponse(writer, json)
 }
 
-func makeSession(creds *models.Credentials, writer http.ResponseWriter, request *http.Request) {
+func makeSession(id int, email string, writer http.ResponseWriter, request *http.Request) {
 	sessionToken := uuid.NewString()
-	sessionData := core.MakeSession(creds.Email)
+	sessionData := core.MakeSession(id, email)
 
 	sessions[sessionToken] = sessionData
 	http.SetCookie(writer, &http.Cookie{

@@ -1,6 +1,7 @@
 package db
 
 import (
+	"errors"
 	"otus/socnet/models"
 	"otus/socnet/views"
 )
@@ -94,23 +95,24 @@ func SearchUsers(db Database, firstName string, lastName string) ([]views.User, 
 	return users, nil
 }
 
-func Login(db Database, creds *models.Credentials) (string, error) {
+func Login(db Database, creds *models.Credentials) (int, string, error) {
+	var id int
 	var password string
-	selectQuery := "SELECT password FROM users WHERE email = ?"
+	selectQuery := "SELECT id, password FROM users WHERE email = ?"
 	response, err := db.Client.Query(selectQuery, creds.Email)
 	if err != nil {
-		return "", err
+		return id, password, err
 	}
 
 	defer response.Close()
 	if !response.Next() {
-		return "", nil
+		return id, password, errors.New("Could not get login data")
 	}
 
-	err = response.Scan(&password)
+	err = response.Scan(&id, &password)
 	if err != nil {
 		panic(err)
 	}
 
-	return password, nil
+	return id, password, nil
 }

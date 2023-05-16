@@ -11,8 +11,8 @@ type TokenMessage struct {
 	Token   string `json:"token"`
 }
 
-func Login(creds *models.Credentials) bool {
+func Login(creds *models.Credentials) (bool, int) {
 	database := db.GetReadDb()
-	storedPassword, _ := db.Login(database, creds)
-	return compareHash(creds.Password, storedPassword)
+	id, storedPassword, _ := db.Login(database, creds)
+	return compareHash(creds.Password, storedPassword), id
 }
