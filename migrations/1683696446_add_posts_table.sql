@@ -1,7 +1,0 @@
-CREATE TABLE `posts` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `user_id` BIGINT NOT NULL,
-  `text` TEXT NOT NULL,
-  FOREIGN KEY (`posts`, `user_id`) REFERENCES `users`(`id`)
-  ON UPDATE CASCADE, ON DELETE RESTRICT
-);
