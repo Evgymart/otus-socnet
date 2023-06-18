@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"otus/socnet/core"
@@ -26,7 +25,15 @@ func createPost(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	text := getText(request)
-	json := []byte(fmt.Sprintf(`{"id": %d, "Text": "%s"}`, id, text))
+	var message core.Message
+	err = core.CreatePost(id, text)
+	if err != nil {
+		message = core.ResponseError(err)
+	} else {
+		message = core.ResponseOK()
+	}
+
+	json, _ := json.Marshal(message)
 	writeResponse(writer, json)
 }
 

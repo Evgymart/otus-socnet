@@ -1,10 +1,8 @@
 package db
 
-import "otus/socnet/models"
-
-func AddPost(db Database, user *models.User) error {
-	insert := "INSERT INTO users (first_name, last_name, birthdate, gender, email, password, biography, city) VALUES (?,?,?,?,?,?,?,?)"
-	statement, err := db.Client.Query(insert, user.FirstName, user.LastName, user.Birthdate.ToString(), user.Gender, user.Email, user.Password, user.Biography, user.City)
+func AddPost(db Database, userId int, text string) error {
+	insert := "INSERT INTO posts (user_id, text) VALUES (?, ?)"
+	statement, err := db.Client.Query(insert, userId, text)
 	if err != nil {
 		return err
 	}
